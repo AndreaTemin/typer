@@ -1,10 +1,11 @@
-
-anyio             == 3.6.2
 fastapi           == 0.95.1
+anyio             == 3.6.2
+greenlet          == 2.0.2
 idna              == 3.4
 pip               == 23.1.2
 pydantic          == 1.10.7
 setuptools        == 65.5.0
 sniffio           == 1.3.0
+SQLAlchemy        == 1.4.0
 starlette         == 0.26.1
 typing_extensions == 4.5.0
