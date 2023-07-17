@@ -1,13 +1,51 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
-from sqlalchemy.orm import relationship
+from contextlib import contextmanager
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base, relationship
 from sqlalchemy.ext.declarative import declarative_base
 
+
+username = "postgres"
+password = "FabioFazio2023"
+database = "typer"
+port = 5432
+host = "localhost"
+
+# Define your SQLAlchemy models
+# Base = declarative_base()
+
+# ... Define your User model and other necessary models ...
+
+# Connect to the database
+#  # # # # #DATABASE_URL = "postgresql://user:password@localhost:5432/dbname"
+SQLALCHEMY_DATABASE_URL = f"postgresql://{username}:{password}@{host}:{port}/{database}"
+# engine = create_engine(SQLALCHEMY_DATABASE_URL)
+# SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+
+# # Initialize the user database
+# user_db = SQLAlchemyUserDatabase(User, database, Base)
+
+
+
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL
+)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+@contextmanager
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+ 
 Base = declarative_base()
 
 class User(Base):
     __tablename__ = 'users'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(String, primary_key=True)
     username = Column(String(50), unique=True, nullable=False)
     email = Column(String(100), unique=True, nullable=False)
     password = Column(String(100), nullable=False)
@@ -17,7 +55,7 @@ class User(Base):
 class Lesson(Base):
     __tablename__ = 'lessons'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     title = Column(String(100), nullable=False)
     description = Column(String(500), nullable=False)
     created_at = Column(DateTime, nullable=False)
