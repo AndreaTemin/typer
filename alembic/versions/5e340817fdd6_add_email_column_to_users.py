@@ -17,10 +17,10 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.add_column(table_name="users", column=Column("email", String(100), unique=True, nullable=False))
-    pass
+    op.add_column(table_name="users", column=Column("email", String(100), unique=False, nullable=True, default="test@gmail.com"))
+    
 
 
 def downgrade() -> None:
     op.drop_column(table_name="users", column_name="email")
-    pass
+    
