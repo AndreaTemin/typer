@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, create_engine
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, UniqueConstraint, create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base, relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -51,6 +51,16 @@ class User(Base):
     password = Column(String(100), nullable=False)
     created_at = Column(DateTime, nullable=False)
     updated_at = Column(DateTime, nullable=False)
+
+class Word(Base):
+    __tablename__ = 'words'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    word = Column(String(64), nullable=False)
+    language = Column(String(32), nullable=False)
+    meaning = Column(String(256))
+    example = Column(String(256))
+    frequency = Column(Integer, nullable=False, default=0)  # Add frequency column
+    uq_word_language = UniqueConstraint(word, language) # Add unique constraint
 
 class Lesson(Base):
     __tablename__ = 'lessons'

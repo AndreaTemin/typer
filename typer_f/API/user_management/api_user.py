@@ -1,13 +1,19 @@
 import uuid
+from fastapi.responses import JSONResponse
 import jwt
 
 from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from datetime import datetime
-from database import get_db, User
+from database import get_db, User, Word
 from .user_validation import is_valid_email, is_valid_name, is_valid_password
-from sqlalchemy.orm import Session
+from sqlalchemy import func
+from random import shuffle
+# import sys
+# sys.path.append("C:\\Users\\aneme\\Desktop\\Progetti\\typer\\typer_f")
+
+
 
 
 router = APIRouter()
@@ -131,3 +137,20 @@ def get_current_user():
 @router.get("/protected", dependencies=[Depends(authenticate_token)])
 def protected_route():
     return {"message": "This is a protected route."}
+
+
+@router.get("/api/words")
+async def get_lessons(language: str = "english", limit: int = 10):
+    with get_db() as db:
+        
+        words = db.query(Word.word).group_by(Word.word)\
+                .order_by(func.max(Word.frequency).desc())\
+                .filter(Word.language == language).limit(limit).all()
+
+        words = [word[0] for word in words] 
+        # print(words)
+        shuffle(words) #thinking about moving this on front end
+        # print(words)
+    return {"data": words}
+        
+    

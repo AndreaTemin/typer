@@ -25,10 +25,9 @@ def upgrade() -> None:
         sa.Column('created_at', sa.DateTime(200)),
         sa.Column('updated_at', sa.DateTime(200)),
     )
-    pass
+    
 
 
 def downgrade() -> None:
     op.drop_table('users')
-    pass
 
